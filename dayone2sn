@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+
+from datetime import datetime, timezone
+from json import dumps
+from plistlib import load
+from sys import argv
+from uuid import uuid4
+
+def translate(filename):
+	with open(filename, 'rb') as fp:
+		plist = load(fp)
+
+	return {
+		'created_at': plist['Creation Date'].isoformat(),
+		'updated_at': plist['Creation Date'].isoformat(),
+		'uuid': str(uuid4()),
+		'content_type': 'Note',
+		'content': {
+			'text': plist['Entry Text']
+		}
+	}
+
+items = [translate(filename) for filename in argv[1:]]
+
+print(dumps({"items": items}))
+
